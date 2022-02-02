@@ -1,8 +1,30 @@
 "use strict";
 var request = require("request");
-const resetDatabase = require("../resetDatabase");
+var dbSession = require("../../src/backend/dbSession.js");
+var Server = require("../../src/backend/server.js").Server;
+var resetDatabase = require("../resetDatabase");
+var async = require("async");
 
 describe("The API", function () {
+  var server;
+
+  beforeEach(function (done) {
+    server = Server("8081");
+    server.listen(function (err) {
+      resetDatabase(dbSession, function () {
+        done(err);
+      });
+    });
+  });
+
+  afterEach(function (done) {
+    server.close(function () {
+      resetDatabase(dbSession, function () {
+        done();
+      });
+    });
+  });
+
   it("should respond to a GET request at /api/keywords/", function (done) {
     var expected = {
       _items: [

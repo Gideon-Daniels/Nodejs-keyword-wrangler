@@ -2,9 +2,10 @@
 
 var Percolator = require("percolator").Percolator;
 var dbSession = require("../../src/backend/dbSession.js");
+var Server = require("/server.js").Server;
+var server = Server("8080");
 
 var port = 8080;
-var server = Percolator({ port: port, autoLink: false });
 
 server.route("/api/keywords", {
   GET: function (req, res) {
@@ -23,5 +24,5 @@ server.route("/api/keywords", {
 });
 
 server.listen(function () {
-  console.log("Server started and listening on port", port);
+  console.log("Server started and listening on port", server.options.port);
 });
