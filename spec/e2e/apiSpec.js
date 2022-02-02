@@ -1,5 +1,6 @@
 "use strict";
 var request = require("request");
+const resetDatabase = require("../resetDatabase");
 
 describe("The API", function () {
   it("should respond to a GET request at /api/keywords/", function (done) {
@@ -11,15 +12,52 @@ describe("The API", function () {
       ],
     };
 
-    request.get(
-      {
-        url: "http://localhost:8080/api/keywords/",
-        json: true,
-      },
-      function (err, res, body) {
-        expect(res.statusCode).toBe(200);
-        expect(body.foo).toEqual(expected);
-        done();
+    async.series(
+      [
+        function (callback) {
+          resetDatabase(dbSession, callback);
+        },
+
+        function (callback) {
+          dbSession.insert(
+            "keyword",
+            { value: "Aubergine", categoryID: 1 },
+            function (err) {
+              callback(err);
+            }
+          );
+        },
+
+        function (callback) {
+          dbSession.insert("keyword", { value: "Onion", categoryID: 1 }),
+            function (err) {
+              callback(err);
+            };
+        },
+
+        function (callback) {
+          dbSession.insert(
+            "keyword",
+            { value: "Knife", categoryID: 2 },
+            function (err) {
+              callback(err);
+            }
+          );
+        },
+      ],
+      // callback
+      function (err, results) {
+        request.get(
+          {
+            url: "http://localhost:8080/api/keywords/",
+            json: true,
+          },
+          function (err, ress, body) {
+            expect(res.statusCode).toBe(200);
+            expect(body.foo).toEqual(expected);
+            done();
+          }
+        );
       }
     );
   });
