@@ -2,7 +2,7 @@
 
 var Percolator = require("percolator").Percolator;
 var dbSession = require("../../src/backend/dbSession.js");
-var Server = require("/server.js").Server;
+var Server = require("../backend/server").Server;
 var server = Server("8080");
 
 var port = 8080;
