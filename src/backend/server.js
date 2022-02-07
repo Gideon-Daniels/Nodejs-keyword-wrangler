@@ -8,7 +8,7 @@ var Server = function (port) {
   var server = Percolator({
     port: port,
     autoLink: false,
-    staticDir: __dirname + "/../frontend",
+    staticDir: path.join(__dirname, "/../frontend"),
   });
 
   server.route("/api/keywords", {
@@ -99,7 +99,7 @@ var Server = function (port) {
           console.log(err);
           res.status.internalServerError(err);
         } else {
-          res.object({status: 'ok'}).send();
+          res.object({status: 'ok',}).send();
         }
       })
     }
